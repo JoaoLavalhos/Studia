@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studia</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== SCREENS ===== -->
+
+  <!-- SCREEN: Login -->
+  <div id="screen-login" class="screen active">
+    <div class="login-bg"></div>
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-icon">📚</div>
+        <h1 class="logo-title">Studia</h1>
+        <p class="logo-sub">Organize sua vida acadêmica</p>
+      </div>
+      <div class="demo-note">
+        Seus dados ficam salvos neste navegador. Esta versão funciona inteiramente no front-end, sem necessidade de servidor.
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="login-email" placeholder="seu@email.com" maxlength="120" autocomplete="email" />
+      </div>
+      <button class="btn-primary full" onclick="doLogin()">Entrar</button>
+      <button class="btn-demo full" onclick="exploreSampleData()">Explorar com dados de exemplo</button>
+      <div class="login-divider">Primeiro acesso?</div>
+      <button class="btn-outline full" onclick="showScreen('register')">Criar perfil local</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: Register -->
+  <div id="screen-register" class="screen">
+    <div class="topbar simple">
+      <button class="back-btn" onclick="showScreen('login')">←</button>
+      <span>Criar conta</span>
+    </div>
+    <div class="content-padded">
+      <div class="demo-note compact">
+        O perfil é salvo localmente neste navegador para que a aplicação possa ser usada sem backend.
+      </div>
+      <div class="form-group">
+        <label>Nome completo</label>
+        <input type="text" id="reg-name" placeholder="Seu nome" maxlength="80" autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="reg-email" placeholder="seu@email.com" maxlength="120" autocomplete="email" />
+      </div>
+      <button class="btn-primary full" style="margin-top:8px" onclick="doRegister()">Criar perfil local</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: Home -->
+  <div id="screen-home" class="screen">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 class="screen-title">Início</h2>
+        <p class="screen-sub">Resumo do dia por disciplina</p>
+      </div>
+      <div class="topbar-right-group">
+        <button class="icon-btn notif-btn" onclick="showScreen('notifications')" id="notif-badge-btn">
+          🔔<span class="badge" id="notif-badge" style="display:none"></span>
+        </button>
+        <div class="profile-trigger" onclick="showScreen('profile')">
+          <div class="topbar-avatar" id="home-topbar-avatar">?</div>
+        </div>
+      </div>
+    </div>
+    <div class="content-scroll">
+      <div id="home-upcoming" class="upcoming-box" style="display:none">
+        <div class="upcoming-header">📅 PRÓXIMAS ENTREGAS</div>
+        <div id="upcoming-list"></div>
+      </div>
+      <div id="home-empty" class="empty-state-home" style="display:none">
+        <div class="empty-icon">🎓</div>
+        <h3>Nenhuma disciplina ainda</h3>
+        <p>Adicione suas matérias em <strong>Disciplinas</strong> para começar a organizar seus prazos.</p>
+        <button class="btn-primary" onclick="showScreen('disciplines')">Ir para Disciplinas</button>
+      </div>
+      <div id="home-disciplines-list"></div>
+    </div>
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="showScreen('home')" data-screen="home"><span class="nav-icon">🏠</span><span>Início</span></button>
+      <button class="nav-item" onclick="showScreen('disciplines')" data-screen="disciplines"><span class="nav-icon">📖</span><span>Disciplinas</span></button>
+      <button class="nav-item" onclick="showScreen('calendar')" data-screen="calendar"><span class="nav-icon">📅</span><span>Calendário</span></button>
+      <button class="nav-item" onclick="showScreen('notifications')" data-screen="notifications"><span class="nav-icon">🔔</span><span>Notificações</span></button>
+    </nav>
+  </div>
+
+  <!-- SCREEN: Disciplines List -->
+  <div id="screen-disciplines" class="screen">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 class="screen-title">Disciplinas</h2>
+        <p class="screen-sub">Lista de matérias</p>
+      </div>
+      <div class="topbar-right-group">
+        <button class="btn-add-disc" onclick="openAddDiscipline()">+ Nova</button>
+        <div class="profile-trigger" onclick="showScreen('profile')">
+          <div class="topbar-avatar" id="disc-topbar-avatar">?</div>
+        </div>
+      </div>
+    </div>
+    <div class="content-scroll">
+      <div id="disc-empty" class="empty-state" style="display:none">
+        <div class="empty-icon">📚</div>
+        <h3>Nenhuma disciplina</h3>
+        <p>Toque em <strong>+ Nova</strong> para adicionar sua primeira matéria.</p>
+      </div>
+      <div id="disc-list"></div>
+    </div>
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="showScreen('home')" data-screen="home"><span class="nav-icon">🏠</span><span>Início</span></button>
+      <button class="nav-item active" onclick="showScreen('disciplines')" data-screen="disciplines"><span class="nav-icon">📖</span><span>Disciplinas</span></button>
+      <button class="nav-item" onclick="showScreen('calendar')" data-screen="calendar"><span class="nav-icon">📅</span><span>Calendário</span></button>
+      <button class="nav-item" onclick="showScreen('notifications')" data-screen="notifications"><span class="nav-icon">🔔</span><span>Notificações</span></button>
+    </nav>
+  </div>
+
+  <!-- SCREEN: Discipline Board (Kanban) -->
+  <div id="screen-board" class="screen">
+    <div class="topbar board-topbar">
+      <button class="back-btn" onclick="goBackFromBoard()">←</button>
+      <div class="board-title-area" onclick="openEditDiscipline()">
+        <div id="board-disc-avatar" class="disc-avatar small"></div>
+        <span id="board-disc-name" class="board-disc-title"></span>
+        <span class="edit-hint">✏️</span>
+      </div>
+      <button class="icon-btn delete-disc-btn" onclick="confirmDeleteDiscipline()">🗑️</button>
+    </div>
+    <div class="kanban-scroll">
+      <div class="kanban-board" id="kanban-board"></div>
+    </div>
+    <div class="board-bottom-action">
+      <button class="btn-primary full large" onclick="openAddActivity()">+ Nova atividade</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: Calendar -->
+  <div id="screen-calendar" class="screen">
+    <div class="topbar">
+      <div class="topbar-left"><h2 class="screen-title">Calendário</h2></div>
+    </div>
+    <div class="content-scroll">
+      <div class="calendar-nav">
+        <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+        <span id="cal-month-label" class="cal-month"></span>
+        <button class="cal-nav-btn" onclick="calNext()">›</button>
+      </div>
+      <div class="calendar-grid-wrapper">
+        <div class="cal-weekdays">
+          <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+        </div>
+        <div class="cal-days" id="cal-days"></div>
+      </div>
+      <div class="cal-day-detail" id="cal-day-detail" style="display:none">
+        <h3 id="cal-detail-title" class="cal-detail-title"></h3>
+        <div id="cal-detail-list"></div>
+      </div>
+    </div>
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="showScreen('home')" data-screen="home"><span class="nav-icon">🏠</span><span>Início</span></button>
+      <button class="nav-item" onclick="showScreen('disciplines')" data-screen="disciplines"><span class="nav-icon">📖</span><span>Disciplinas</span></button>
+      <button class="nav-item active" onclick="showScreen('calendar')" data-screen="calendar"><span class="nav-icon">📅</span><span>Calendário</span></button>
+      <button class="nav-item" onclick="showScreen('notifications')" data-screen="notifications"><span class="nav-icon">🔔</span><span>Notificações</span></button>
+    </nav>
+  </div>
+
+  <!-- SCREEN: Notifications -->
+  <div id="screen-notifications" class="screen">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 class="screen-title">Notificações</h2>
+        <p class="screen-sub">Alertas de prazos próximos</p>
+      </div>
+    </div>
+    <div class="content-scroll">
+      <div id="notif-empty" class="empty-state" style="display:none">
+        <div class="empty-icon">✅</div>
+        <h3>Tudo em dia!</h3>
+        <p>Sem alertas de prazo no momento.</p>
+      </div>
+      <div id="notif-list"></div>
+    </div>
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="showScreen('home')" data-screen="home"><span class="nav-icon">🏠</span><span>Início</span></button>
+      <button class="nav-item" onclick="showScreen('disciplines')" data-screen="disciplines"><span class="nav-icon">📖</span><span>Disciplinas</span></button>
+      <button class="nav-item" onclick="showScreen('calendar')" data-screen="calendar"><span class="nav-icon">📅</span><span>Calendário</span></button>
+      <button class="nav-item active" onclick="showScreen('notifications')" data-screen="notifications"><span class="nav-icon">🔔</span><span>Notificações</span></button>
+    </nav>
+  </div>
+
+  <!-- SCREEN: User Profile -->
+  <div id="screen-profile" class="screen">
+    <div class="topbar simple">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <span>Meu perfil</span>
+    </div>
+    <div class="content-padded">
+      <div class="profile-card">
+        <div class="profile-avatar" id="profile-avatar-display"></div>
+        <h2 id="profile-name-display" class="profile-name"></h2>
+        <p id="profile-email-display" class="profile-email"></p>
+      </div>
+      <div class="profile-section">
+        <h4 class="section-label">Estatísticas</h4>
+        <div class="stats-row">
+          <div class="stat-box">
+            <span id="stat-disciplines" class="stat-num">0</span>
+            <span class="stat-label">Disciplinas</span>
+          </div>
+          <div class="stat-box">
+            <span id="stat-activities" class="stat-num">0</span>
+            <span class="stat-label">Atividades</span>
+          </div>
+          <div class="stat-box">
+            <span id="stat-done" class="stat-num">0</span>
+            <span class="stat-label">Entregues</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-danger full" onclick="doLogout()">Sair da conta</button>
+    </div>
+  </div>
+
+  <!-- ===== MODALS ===== -->
+
+  <!-- Modal: Add/Edit Discipline -->
+  <div id="modal-add-discipline" class="modal-overlay" onclick="closeModalOutside(event,'modal-add-discipline')">
+    <div class="modal-card">
+      <h3 class="modal-title" id="disc-modal-title">Nova disciplina</h3>
+      <div class="form-group">
+        <label>Nome da disciplina</label>
+        <input type="text" id="new-disc-name" placeholder="Ex: Matemática" maxlength="30" />
+      </div>
+      <div class="form-group">
+        <label>Cor</label>
+        <div class="color-picker" id="color-picker"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-outline" onclick="closeModal('modal-add-discipline')">Cancelar</button>
+        <button class="btn-primary" id="disc-modal-save-btn" onclick="saveDiscipline()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add/Edit Activity -->
+  <div id="modal-add-activity" class="modal-overlay" onclick="closeModalOutside(event,'modal-add-activity')">
+    <div class="modal-card">
+      <h3 class="modal-title" id="act-modal-title">Nova atividade</h3>
+      <div class="form-group">
+        <label>Nome da atividade</label>
+        <input type="text" id="new-act-name" placeholder="Ex: Lista de exercícios 3" maxlength="80" />
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="new-act-description" placeholder="Ex: Resolver as questões 1 a 10 e revisar os conteúdos da aula." maxlength="400" rows="4"></textarea>
+        <span class="field-hint">Opcional · até 400 caracteres</span>
+      </div>
+      <div class="form-group">
+        <label>Data de entrega</label>
+        <input type="date" id="new-act-date" />
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="new-act-type">
+          <option value="Exercício">Exercício</option>
+          <option value="Trabalho">Trabalho</option>
+          <option value="Prova">Prova</option>
+          <option value="Projeto">Projeto</option>
+        </select>
+      </div>
+      <div class="modal-actions activity-modal-actions">
+        <button class="btn-danger" id="act-modal-delete-btn" style="display:none" onclick="confirmDeleteActivity()">Excluir</button>
+        <button class="btn-outline" onclick="closeModal('modal-add-activity')">Cancelar</button>
+        <button class="btn-primary" id="act-modal-save-btn" onclick="saveActivity()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Activity Details -->
+  <div id="modal-activity-details" class="modal-overlay" onclick="closeModalOutside(event,'modal-activity-details')">
+    <div class="modal-card activity-detail-card">
+      <div class="activity-detail-top">
+        <div>
+          <span class="activity-detail-eyebrow">Detalhes da atividade</span>
+          <h3 class="modal-title activity-detail-title" id="detail-act-name"></h3>
+        </div>
+        <button class="icon-btn detail-close-btn" type="button" onclick="closeModal('modal-activity-details')" aria-label="Fechar detalhes">✕</button>
+      </div>
+      <div class="activity-detail-meta">
+        <span id="detail-act-type" class="activity-detail-chip"></span>
+        <span id="detail-act-status" class="activity-detail-chip neutral"></span>
+      </div>
+      <div class="activity-detail-grid">
+        <div>
+          <span class="detail-label">Disciplina</span>
+          <strong id="detail-act-discipline"></strong>
+        </div>
+        <div>
+          <span class="detail-label">Entrega</span>
+          <strong id="detail-act-date"></strong>
+        </div>
+      </div>
+      <div class="activity-detail-description">
+        <span class="detail-label">Descrição</span>
+        <p id="detail-act-description"></p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-outline" type="button" onclick="closeModal('modal-activity-details')">Fechar</button>
+        <button class="btn-primary" type="button" id="detail-act-edit-btn">Editar atividade</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirm Delete Activity -->
+  <div id="modal-confirm-delete-activity" class="modal-overlay" onclick="closeModalOutside(event,'modal-confirm-delete-activity')">
+    <div class="modal-card">
+      <h3 class="modal-title">⚠️ Remover atividade?</h3>
+      <p class="modal-text">Esta atividade será removida permanentemente do quadro, calendário e alertas.</p>
+      <div class="modal-actions">
+        <button class="btn-outline" onclick="cancelDeleteActivity()">Cancelar</button>
+        <button class="btn-danger" onclick="deleteActivity()">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirm Delete Discipline -->
+  <div id="modal-confirm-delete" class="modal-overlay" onclick="closeModalOutside(event,'modal-confirm-delete')">
+    <div class="modal-card">
+      <h3 class="modal-title">⚠️ Remover disciplina?</h3>
+      <p class="modal-text">Todas as atividades desta disciplina serão removidas permanentemente.</p>
+      <div class="modal-actions">
+        <button class="btn-outline" onclick="closeModal('modal-confirm-delete')">Cancelar</button>
+        <button class="btn-danger" onclick="deleteDiscipline()">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
